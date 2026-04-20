@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>markov-regime · raphael mukondiwa</title>
+  <title>markov chain model for bitcoin sentiment · raphael mukondiwa</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
@@ -41,11 +41,6 @@
       gap: 6px;
       align-items: center;
     }
-    .post-meta .tag {
-      border: 1px solid var(--border);
-      padding: 1px 6px;
-      border-radius: 3px;
-    }
     .post-meta .label {
       color: var(--text-tertiary);
       opacity: 0.6;
@@ -69,7 +64,117 @@
       border-top: 1px solid var(--border);
       margin: 32px 0;
     }
+    .post-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-primary);
+    }
+    .post-body p { margin-bottom: 1.2em; }
     .post-body a { color: var(--link); }
+    .post-body h2 {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin: 2em 0 0.8em;
+    }
+    .post-body pre {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1.2em 0;
+      position: relative;
+    }
+    .post-body pre .lang-label {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      opacity: 0.7;
+    }
+    .post-body code {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+    .post-body p code, .post-body li code {
+      background: var(--bg-secondary);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    .post-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.4em 0;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .post-body th {
+      text-align: left;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      border-bottom: 1px solid var(--border);
+      padding: 6px 10px 6px 0;
+    }
+    .post-body td {
+      padding: 5px 10px 5px 0;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .post-body td:first-child, .post-body th:first-child {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .post-body td.num, .post-body th.num { text-align: right; padding-right: 0; }
+    .post-body td.diag { color: var(--text-primary); font-weight: 500; }
+    .post-body ol, .post-body ul {
+      padding-left: 1.4em;
+      margin-bottom: 1.2em;
+    }
+    .post-body li { margin-bottom: 0.4em; }
+    .post-body figure {
+      margin: 1.8em 0;
+    }
+    .post-body figure img {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .post-body figcaption {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+      text-align: center;
+    }
+    .strategy-block {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem 1.2rem;
+      margin: 1.2em 0;
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+    .strategy-block .strategy-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .strategy-block .strategy-row:last-child { border-bottom: none; }
+    .strategy-block .strategy-label { color: var(--text-secondary); }
+    .strategy-block .strategy-return { color: var(--text-primary); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -77,7 +182,7 @@
 
     <a href="/" class="back">← raphael mukondiwa</a>
 
-    <div class="post-title">markov chain model for bitcoin sentiment-based investing</div>
+    <div class="post-title">modeling bitcoin sentiment as a markov chain</div>
 
     <div class="post-meta">
       <span class="label">project</span>
@@ -85,14 +190,202 @@
     </div>
     <div class="post-meta">
       <span class="label">written</span>
-      <time datetime="2026-04-17">2026-04-17</time>
+      <time datetime="2026-04-20">2026-04-20</time>
+    </div>
+    <div class="post-meta">
+      <span class="label">authors</span>
+      <span>raphael mukondiwa · <a href="https://www.linkedin.com/in/benitabesa/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-decoration-color:var(--border);">benita besa</a></span>
     </div>
 
     <div class="post-tags">
       <span class="tag">python</span>
       <span class="tag">numpy</span>
       <span class="tag">pandas</span>
-      <span class="tag">algorithmic trading</span>
+      <span class="tag">kaggle</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="post-body">
+
+      <p>
+        During Spring 2025 (sophomore year), I took MATH 242: Discrete Math and Proof. To wrap
+        up the semester, we were allowed to do a research project on any course concept that
+        interested us, and after a lot of brainstorming, my project partner and I decided to work
+        on Markov chains.
+      </p>
+
+      <p>
+        Our main question: can Bitcoin's volatile, emotional swings be modeled as a discrete
+        stochastic process, and if so, do the transition probabilities give us any actionable
+        information? We built a 5-state Markov chain over the CNN Fear &amp; Greed Index to find
+        out, then wrapped it in a CLI tool for interactively comparing sentiment-based buy/sell
+        strategies.
+      </p>
+
+      <h2>data and state definition</h2>
+
+      <p>
+        We used the Bitcoin Pulse hourly dataset from Kaggle, which pairs BTC/USDT prices with
+        the Fear &amp; Greed Index hour by hour. Filtering to 2023–2025 gave us just over 8,000
+        observations. We then discretized the index into five sentiment states:
+      </p>
+
+      <pre><span class="lang-label">python</span><code>def label_state(index):
+    if index &lt;= 25:  return "Extreme Fear"
+    elif index &lt;= 45: return "Fear"
+    elif index &lt;= 60: return "Neutral"
+    elif index &lt;= 75: return "Greed"
+    else:             return "Extreme Greed"</code></pre>
+
+      <p>
+        We used the published Fear &amp; Greed cutoffs rather than data-driven bins; this kept the
+        states interpretable and comparable to how the index is actually reported in practice.
+      </p>
+
+      <h2>the transition matrix</h2>
+
+      <p>
+        We built the 5×5 transition matrix by counting hour-over-hour state changes and
+        row-normalizing the counts:
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th class="num">Ext. Fear</th>
+            <th class="num">Fear</th>
+            <th class="num">Neutral</th>
+            <th class="num">Greed</th>
+            <th class="num">Ext. Greed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Extreme Fear</td>
+            <td class="num diag">0.985</td>
+            <td class="num">0.015</td>
+            <td class="num">0.000</td>
+            <td class="num">0.000</td>
+            <td class="num">0.000</td>
+          </tr>
+          <tr>
+            <td>Fear</td>
+            <td class="num">0.004</td>
+            <td class="num diag">0.987</td>
+            <td class="num">0.008</td>
+            <td class="num">0.001</td>
+            <td class="num">0.000</td>
+          </tr>
+          <tr>
+            <td>Neutral</td>
+            <td class="num">0.002</td>
+            <td class="num">0.013</td>
+            <td class="num diag">0.983</td>
+            <td class="num">0.002</td>
+            <td class="num">0.000</td>
+          </tr>
+          <tr>
+            <td>Greed</td>
+            <td class="num">0.000</td>
+            <td class="num">0.000</td>
+            <td class="num">0.005</td>
+            <td class="num diag">0.990</td>
+            <td class="num">0.005</td>
+          </tr>
+          <tr>
+            <td>Extreme Greed</td>
+            <td class="num">0.000</td>
+            <td class="num">0.000</td>
+            <td class="num">0.000</td>
+            <td class="num">0.016</td>
+            <td class="num diag">0.984</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <figure>
+        <img src="../assets/markov-btc-state-diagram.png" alt="State transition diagram for the 5-state Bitcoin sentiment Markov chain">
+        <figcaption>Fear &amp; Greed Index — Bitcoin 2025 data state transition diagram. Self-loops dominate; off-diagonal transitions are rare and strictly nearest-neighbor.</figcaption>
+      </figure>
+
+      <p>
+        The first thing that jumped out was how diagonal-dominant this matrix is. Sentiment has a
+        self-transition probability of roughly 98–99% at the hourly scale, which makes sense:
+        sentiment is sticky on short timescales. But this has real implications for the modeling.
+        Off-diagonal transitions are rare events, and any state more than one step away in the
+        ordering is effectively unreachable in a single hop. The chain is also nearly band-diagonal,
+        meaning sentiment tends to walk rather than jump.
+      </p>
+
+      <h2>strategy evaluation</h2>
+
+      <p>
+        The CLI enumerates all 25 buy/sell state pairs and scores each one using a return ratio
+        computed from the state-conditional average prices:
+      </p>
+
+      <pre><span class="lang-label">math</span><code>Return Ratio = (P̄_sell − P̄_buy) / P̄_buy</code></pre>
+
+      <p>Two candidate strategies stood out:</p>
+
+      <div class="strategy-block">
+        <div class="strategy-row">
+          <span class="strategy-label">Strategy A — buy Extreme Fear, sell Neutral</span>
+          <span class="strategy-return">+11.4%</span>
+        </div>
+        <div class="strategy-row">
+          <span class="strategy-label">Strategy B — buy Fear, sell Greed</span>
+          <span class="strategy-return">+14.95%</span>
+        </div>
+      </div>
+
+      <p>
+        Strategy B dominated on both raw return and consistency. Running the same pipeline across
+        the data, its probability-weighted expected return remained positive while Strategy A's
+        went slightly negative. Transitions <em>out of</em> Greed and Extreme Greed tended to
+        produce negative return ratios across the board, which is consistent with the intuition
+        that optimistic or greedy regimes are better to exit than to enter.
+      </p>
+
+      <h2>what the numbers actually mean</h2>
+
+      <p>
+        An important caveat: the return ratio compares time-averaged prices <em>between</em> two
+        sentiment states; it is not the realized return of actually holding BTC through a
+        transition. Because 2025 was a strong bull year (BTC appreciated roughly 51% across
+        sentiment states), some of what shows up as "Strategy B return" is simply the price drift
+        that happened to occur between the time windows when the market sat in Fear versus Greed.
+      </p>
+
+      <p>
+        Multiplying by the transition probability gives a more honest expected-value number, and
+        those values are tiny: less than 0.1% per hourly transition, even for the best-performing
+        pairs. So the tool we built is best read as a descriptive lens on <em>where</em> the
+        market was priced in each sentiment regime, not as a tradeable backtest.
+      </p>
+
+      <h2>what i'd build next</h2>
+
+      <ol>
+        <li>
+          A realized-transition backtest with transaction costs and a buy-and-hold benchmark.
+        </li>
+        <li>
+          Testing higher-order dependence. The Markov-1 assumption is convenient but testable;
+          a second-order chain or a hidden Markov model over raw returns could capture regime
+          structure that the discretized index misses.
+        </li>
+        <li>
+          Out-of-sample validation across full market cycles (2022 bear, 2021 bull, 2020 pandemic)
+          to see whether the Fear→Greed edge is structural or just an artifact of the specific
+          regime we studied.
+        </li>
+      </ol>
+
+      <p>The full code and CLI are on <a href="https://github.com/rmukondiwa/Markov-Bitcoin-Investment-Strategy-Model" target="_blank" rel="noopener">GitHub</a>.</p>
+
     </div>
 
     <hr class="divider">
