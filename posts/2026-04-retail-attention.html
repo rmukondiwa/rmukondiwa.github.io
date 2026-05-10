@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>retail attention as a volatility predictor and momentum amplifier · raphael mukondiwa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .post-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: clamp(32px, 5vh, 64px) var(--gutter) clamp(48px, 8vh, 96px);
+    }
+    .back {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 32px;
+    }
+    .back:hover { color: var(--link); }
+    .post-title {
+      font-family: var(--mono);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .post-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .post-meta .label {
+      color: var(--text-tertiary);
+      opacity: 0.6;
+    }
+    .post-tags {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .post-tags .tag {
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+    .post-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-primary);
+    }
+    .post-body p { margin-bottom: 1.2em; }
+    .post-body a { color: var(--link); }
+    .post-body h2 {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin: 2em 0 0.8em;
+    }
+    .post-body pre {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1.2em 0;
+      position: relative;
+    }
+    .post-body pre .lang-label {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      opacity: 0.7;
+    }
+    .post-body code {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+    .post-body p code, .post-body li code {
+      background: var(--bg-secondary);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    .post-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.4em 0;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .post-body th {
+      text-align: left;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      border-bottom: 1px solid var(--border);
+      padding: 6px 10px 6px 0;
+    }
+    .post-body td {
+      padding: 5px 10px 5px 0;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .post-body td:first-child, .post-body th:first-child {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .post-body td.num, .post-body th.num { text-align: right; padding-right: 0; }
+    .post-body td.hi { color: var(--text-primary); font-weight: 600; }
+    .post-body ol, .post-body ul {
+      padding-left: 1.4em;
+      margin-bottom: 1.2em;
+    }
+    .post-body li { margin-bottom: 0.4em; }
+    .post-body figure {
+      margin: 1.8em 0;
+    }
+    .post-body figure img {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .post-body figcaption {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+      text-align: center;
+    }
+    .result-block {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem 1.2rem;
+      margin: 1.2em 0;
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+    .result-block .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .result-block .result-row:last-child { border-bottom: none; }
+    .result-block .result-label { color: var(--text-secondary); }
+    .result-block .result-val { color: var(--text-primary); font-weight: 600; }
+    .callout {
+      border-left: 2px solid var(--border);
+      padding: 0.6em 1em;
+      margin: 1.4em 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="post-container">
+
+    <a href="/" class="back">← raphael mukondiwa</a>
+
+    <div class="post-title">retail attention as a volatility predictor and momentum amplifier</div>
+
+    <div class="post-meta">
+      <span class="label">paper</span>
+      <time datetime="2026-04-28">2026-04-28</time>
+    </div>
+    <div class="post-meta">
+      <span class="label">research</span>
+      <span>algorithmic trading · duke university · spring 2026</span>
+    </div>
+    <div class="post-meta">
+      <span class="label">authors</span>
+      <span>daniel matten · alicia lu · raphael mukondiwa · xuran (jerry) lyu</span>
+    </div>
+
+    <div class="post-tags">
+      <span class="tag">python</span>
+      <span class="tag">quantconnect</span>
+      <span class="tag">garch</span>
+      <span class="tag">reddit</span>
+      <span class="tag">wikipedia</span>
+      <span class="tag">panel regression</span>
+      <a href="../assets/retail-attention-strategy-report.pdf" target="_blank" class="tag" style="text-decoration:none;color:var(--link);">paper pdf ↗</a>
+    </div>
+
+    <hr class="divider">
+
+    <div class="post-body">
+
+      <p>
+        For Math 585 (Algorithmic Trading) this spring, our team investigated whether retail
+        attention, measured by Wikipedia pageviews and WallStreetBets discussion volume, predicts
+        stock return volatility and amplifies momentum. We ran nine statistical validation tests
+        on 40 U.S. equities over 2018–2026, deployed a live strategy on QuantConnect, and
+        honestly documented every approach that didn't work before the one that did.
+      </p>
+
+      <p>
+        The short answer: attention robustly predicts next-day absolute returns beyond GARCH(1,1)
+        forecasts (OOS t&nbsp;=&nbsp;6.00, 94.4% of tickers positive), and attention in uptrend
+        regimes has a strong positive directional effect that attention in isolation does not.
+        The deployed strategy hit Sharpe ratios of 0.56 (IS), 1.83 (OOS-A), 0.78 (OOS-B),
+        and 1.04 through the COVID crash, all with max drawdown ≤&nbsp;10.3%.
+      </p>
+
+      <h2>the central insight</h2>
+
+      <p>
+        We started by trying to use Reddit sentiment as a directional signal. FinBERT on
+        WallStreetBets posts achieved roughly 33% accuracy; no better than random three-class
+        classification. WSB is written in slang, sarcasm, and emoji-laden prose that FinBERT
+        was never trained on. We considered GPT-4/Claude for better classification but 1.6M
+        posts at $0.01–0.03 per post would have run $16,000–$48,000. Student research project budget
+        is definitely not that!
+      </p>
+
+      <p>
+        This constraint forced a useful reframe. Rather than chasing sentiment, we focused on
+        <em>attention volume</em>: does the sheer count of posts or pageviews, regardless of
+        tone, contain tradeable information about price movement intensity? This is a cleaner
+        question. Attention is measured objectively; it doesn't require a model to interpret it.
+      </p>
+
+      <div class="callout">
+        The key finding: attention volume predicts volatility magnitude. Attention
+        <em>combined with an existing trend</em> predicts direction. Attention alone is
+        ambiguous or slightly negative on signed returns.
+      </div>
+
+      <h2>data pipeline (my contribution)</h2>
+
+      <p>
+        I built the ingestion and signal pipeline that merged two heterogeneous sources:
+        1.6M Reddit posts (Pushshift archive, irregular timestamps) and Wikimedia REST API
+        pageview counts (daily, UTC). The pipeline resolves ticker aliases to 40 canonical
+        identifiers, GOOG/GOOGL and similar, using a hand-curated mapping table. Weekend Reddit
+        activity is realigned to the following trading day using business-day reindexing;
+        missing Wikipedia counts are forward-filled up to three consecutive days before being
+        flagged as unavailable.
+      </p>
+
+      <p>
+        The final output, <code>qc_signal_v3.csv</code>, contains 75,855 ticker-day rows
+        of daily z-scores, composite attention flags, and spike indicators. It's uploaded to
+        the QuantConnect Object Store via an HMAC-SHA256 authenticated API call for live
+        strategy consumption.
+      </p>
+
+      <p>
+        I also built a low-latency GPU inference infrastructure on Modal; a T4 GPU running
+        FinBERT at <code>batch_size=64</code> in a <code>debian_slim</code> container,
+        dispatched via RPC with results returned as pickle. We didn't end up using it in
+        the final strategy (the sentiment signal was too noisy), but the infrastructure
+        was designed to be reactivated for incremental live inference.
+      </p>
+
+      <h2>signal construction</h2>
+
+      <p>
+        For each ticker and source (wiki, reddit), we compute a 30-day rolling z-score
+        shifted one day to avoid look-ahead bias:
+      </p>
+
+      <pre><span class="lang-label">math</span><code>z_i,t = clip( (x_i,t − μ_i,t−1:30) / σ_i,t−1:30 , −10, 10 )</code></pre>
+
+      <p>
+        The composite signal uses IC-weighted blending. The raw information coefficient
+        analysis on IS data gives Wiki IC&nbsp;=&nbsp;0.025 and Reddit IC&nbsp;=&nbsp;0.975,
+        but this overfits to the 9.3% of ticker-days where Reddit data actually exists.
+        For the remaining 90.7% (wiki-only), we stabilize to w<sub>wiki</sub>&nbsp;=&nbsp;0.60,
+        w<sub>reddit</sub>&nbsp;=&nbsp;0.40.
+      </p>
+
+      <p>
+        High attention and spike flags:
+      </p>
+
+      <pre><span class="lang-label">math</span><code>HighAttention_i,t   = 1{ z_comp ≥ 2.5 }
+FirstDaySpike_i,t   = 1{ z_comp ≥ 3.0 } · 1{ z_comp_t−1 &lt; 3.0 }</code></pre>
+
+      <h2>nine statistical tests</h2>
+
+      <p>
+        Jerry ran all nine tests. I'm listing the ones that shaped strategy design most directly.
+      </p>
+
+      <p>
+        <strong>Granger causality (ADL, 5 lags).</strong> With Benjamini-Hochberg FDR correction
+        at q&nbsp;=&nbsp;0.05, the composite signal Granger-causes absolute returns in 57.9% of
+        tickers OOS; up from 28.9% IS. OOS significance exceeding IS means this isn't an artifact
+        of in-sample fitting. The relationship is stronger out of sample.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Signal</th>
+            <th class="num">IS Raw</th>
+            <th class="num">IS FDR</th>
+            <th class="num">OOS Raw</th>
+            <th class="num">OOS FDR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Composite Z → |Return|</td>
+            <td class="num">44.7%</td>
+            <td class="num">28.9%</td>
+            <td class="num">63.2%</td>
+            <td class="num hi">57.9%</td>
+          </tr>
+          <tr>
+            <td>Wiki Z → |Return|</td>
+            <td class="num">34.2%</td>
+            <td class="num">15.8%</td>
+            <td class="num">42.1%</td>
+            <td class="num">36.8%</td>
+          </tr>
+          <tr>
+            <td>Reddit Z → |Return|</td>
+            <td class="num">48.6%</td>
+            <td class="num">43.2%</td>
+            <td class="num">42.9%</td>
+            <td class="num">22.9%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        Reddit alone overfits (43.2% IS → 22.9% OOS). The composite signal generalizes
+        because Wikipedia provides stable, broad coverage while Reddit adds value only when
+        it's available.
+      </p>
+
+      <p>
+        <strong>GARCH benchmark.</strong> If our attention signal just captures the same
+        volatility clustering that GARCH already models, it adds nothing. We fit GARCH(1,1)
+        on each ticker's IS returns, produced OOS forecasts, then compared GARCH forecast
+        errors on high-attention vs. low-attention days. The gap was mean error
+        +0.732 percentage points higher on high-attention days, t&nbsp;=&nbsp;6.00,
+        94.4% of tickers positive. GARCH systematically underestimates volatility when
+        attention is elevated.
+      </p>
+
+      <p>
+        <strong>Distributional regime.</strong> High-attention days (z&nbsp;≥&nbsp;2.5,
+        3.78% of observations) show mean |return| of 2.571% versus 1.664% in low-attention
+        periods; a 1.92× volatility ratio confirmed by a KS test at p&nbsp;=&nbsp;3.6×10⁻²⁸.
+        This directly justifies the short-reduction rule: holding a short during nearly
+        double normal volatility is not worth it.
+      </p>
+
+      <p>
+        <strong>Panel regression with interaction.</strong> The core finding for strategy design
+        comes from the directional panel regression (pooled, HC1 standard errors):
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th class="num">Coef.</th>
+            <th class="num">p</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Attention (composite z)</td>
+            <td class="num">−0.0008</td>
+            <td class="num">0.012</td>
+          </tr>
+          <tr>
+            <td>Momentum (63d)</td>
+            <td class="num">+0.0124</td>
+            <td class="num">&lt;10⁻¹⁸</td>
+          </tr>
+          <tr>
+            <td>Trend (above SMA200)</td>
+            <td class="num">+0.0014</td>
+            <td class="num">&lt;10⁻⁴</td>
+          </tr>
+          <tr>
+            <td>Attn × Trend</td>
+            <td class="num hi">+0.0019</td>
+            <td class="num hi">2.7×10⁻⁷</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        Attention alone has a slightly negative directional coefficient. Attention in an
+        uptrend regime has a strongly positive coefficient. This is the whole basis for the
+        strategy: attention doesn't predict direction, but it amplifies existing momentum.
+      </p>
+
+      <p>
+        <strong>Signal orthogonalization.</strong> We regressed attention on momentum and
+        21-day historical volatility and kept the residual. 58% of the raw Spearman
+        correlation with |return| survives (ρ&nbsp;=&nbsp;0.048 vs. 0.082 raw,
+        both p&nbsp;&lt;&nbsp;10⁻¹⁹). Attention is not just a proxy for momentum
+        or vol.
+      </p>
+
+      <h2>five attempts that didn't work</h2>
+
+      <p>
+        The paper's strategy iteration section is the most honest part of it, and I want to
+        preserve that here.
+      </p>
+
+      <p>
+        <strong>Attempt 1: ATM straddles on spike days.</strong> GARCH t&nbsp;=&nbsp;6.00; our
+        signal clearly predicts vol better than GARCH, so buy straddles when vol is about
+        to spike. Sharpe ≈&nbsp;−0.6. The problem: implied volatility is not GARCH. The
+        options market already prices in that high-attention days are volatile. Our signal
+        beats GARCH but we never tested whether it beats IV. The variance risk premium ate
+        the entire edge.
+      </p>
+
+      <p>
+        <strong>Attempt 2: delta-hedged version.</strong> Buy calls, short stock, isolate
+        gamma P&amp;L. Same problem compounded by bid-ask spreads and discrete hedging error.
+        Uncapped drawdown hit 41% before we stopped it.
+      </p>
+
+      <p>
+        <strong>Attempt 3: attention overlay on 12-1 momentum.</strong> Boost weight +8%
+        when a long has a spike. Underperformed pure momentum by 0.3 Sharpe points. The
+        spike boost adds variance (spikes coincide with high-vol days) without adding return,
+        because we hadn't yet run the panel regression showing the attn×trend interaction
+        only fires in uptrend regimes.
+      </p>
+
+      <p>
+        <strong>Attempt 4: market-wide risk alarm.</strong> When multiple tickers spiked
+        simultaneously, reduce gross exposure and hedge with short SPY/QQQ. Drawdown 25%.
+        The hedge bled money through 2018–2021's bull market. With 40 tickers at a 3.65%
+        spike rate, expected ≈&nbsp;1.5 spikes per day, so the alarm was almost always on.
+      </p>
+
+      <p>
+        <strong>Attempt 5: event-driven, entry only on spike.</strong> Enter when spike
+        fires with trend and momentum filters, size by inverse vol. Sharpe ≈&nbsp;−0.5.
+        First-day spikes after filtering are only ≈&nbsp;0.9 per day across 40 tickers;
+        too rare to support an event-driven architecture while running a continuous index hedge.
+      </p>
+
+      <p>
+        Each failure pointed to the same conclusion: momentum supplies continuous direction;
+        attention modulates position size and manages risk. Not the other way around.
+      </p>
+
+      <h2>the final strategy</h2>
+
+      <p>
+        Every 7 trading days: rank all 40 tickers by 12-1 momentum (skip 21 days), long top
+        3 that pass the 200-day MA filter, short bottom 2 below the 50-day MA. Apply the
+        attention overlay:
+      </p>
+
+      <ul>
+        <li><strong>Spike boost:</strong> if a long has an active spike (z&nbsp;≥&nbsp;3.0), add +8% to weight. Justified by the attn×trend interaction (p&nbsp;=&nbsp;2.7×10⁻⁷).</li>
+        <li><strong>Short reduction:</strong> if a short has z&nbsp;≥&nbsp;2.5, halve its weight. Justified by the 1.92× vol ratio; don't hold shorts in elevated-vol regimes.</li>
+      </ul>
+
+      <p>
+        Caps: 20% per name, 27% long gross, 12% short gross, 25% net. Daily loss stop at
+        −2%; drawdown halt at −7% from peak, resume at −3.5%.
+      </p>
+
+      <h2>backtest results</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th class="num">IS (2018–22)</th>
+            <th class="num">OOS-A (May–Nov 23)</th>
+            <th class="num">OOS-B (Jan–Jul 25)</th>
+            <th class="num">COVID (Feb–May 20)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sharpe Ratio</td>
+            <td class="num">0.556</td>
+            <td class="num hi">1.826</td>
+            <td class="num">0.784</td>
+            <td class="num hi">1.036</td>
+          </tr>
+          <tr>
+            <td>Annual Return</td>
+            <td class="num">8.3%</td>
+            <td class="num">31.7%</td>
+            <td class="num">20.0%</td>
+            <td class="num">20.3%</td>
+          </tr>
+          <tr>
+            <td>Max Drawdown</td>
+            <td class="num">9.9%</td>
+            <td class="num">4.8%</td>
+            <td class="num">10.3%</td>
+            <td class="num">7.0%</td>
+          </tr>
+          <tr>
+            <td>Sortino Ratio</td>
+            <td class="num">0.608</td>
+            <td class="num">2.402</td>
+            <td class="num">0.890</td>
+            <td class="num">1.342</td>
+          </tr>
+          <tr>
+            <td>Win Rate</td>
+            <td class="num">63%</td>
+            <td class="num">75%</td>
+            <td class="num">71%</td>
+            <td class="num">61%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        OOS-A and OOS-B Sharpe ratios both exceed IS. That's the thing that matters most
+        here: no overfitting. The COVID period (SPY −34% peak-to-trough) produced a Sharpe
+        of 1.036 with only 7.0% drawdown; the drawdown halt at −7% caught it.
+      </p>
+
+      <p>
+        All parameters were frozen before any OOS backtest and are identical across all
+        periods. The full frozen parameter table is in the paper.
+      </p>
+
+      <h2>paper trading (7 days)</h2>
+
+      <p>
+        Alicia and Jerry deployed the strategy live on QuantConnect on April 21, 2026.
+        The paper trading instance ran on a 12-ticker universe (slightly different from the
+        40-ticker backtest parameters) and held NVDA, AMD, and GOOG. Over 6 trading days
+        it returned +1.54% against a starting equity of $10M with max drawdown under 2%.
+        Too short to be statistically meaningful, but consistent with the backtest profile.
+      </p>
+
+      <h2>what didn't work and what's honest</h2>
+
+      <p>
+        The data limitations are real. Wikipedia visitors are not all investors; a Tesla
+        pageview spike might be students or journalists, not traders. Reddit's 17.7% ticker
+        tag rate means 82.3% of posts are untagged and excluded. No intraday data, no bid-ask
+        spreads, no vol surface. We can't run a 2008 stress test because the data starts in 2018.
+      </p>
+
+      <p>
+        What the evidence supports: attention Granger-causes volatility, high-attention days
+        are nearly 2× more volatile, the signal survives orthogonalization, and factor alpha
+        is significant. What it doesn't support: using attention as a standalone directional
+        signal. It needs momentum and a trend filter to do anything useful directionally.
+      </p>
+
+      <p>
+        The full paper with all nine tests, the strategy iteration history, and the extended
+        stochastic volatility framework is available on request.
+      </p>
+
+    </div>
+
+    <hr class="divider">
+
+    <footer style="padding-top:16px;font-family:var(--mono);font-size:11px;color:var(--text-tertiary);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <span><a href="/" style="color:var(--text-tertiary);text-decoration:none;">← home</a></span>
+      <span><span class="goatcounter-count" data-path="/posts/2026-04-retail-attention.html"></span> views · <button class="theme-toggle" onclick="toggleTheme()" aria-label="toggle theme">theme</button></span>
+    </footer>
+
+  </div>
+
+  <script data-goatcounter="https://rmukondiwa.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    })();
+    function toggleTheme() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var isDark = current === 'dark' ||
+        (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      var next = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+  </script>
+</body>
+</html>
