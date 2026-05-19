@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>our thesis was perfect. then iran got bombed · raphael mukondiwa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .post-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: clamp(32px, 5vh, 64px) var(--gutter) clamp(48px, 8vh, 96px);
+    }
+    .back {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 32px;
+    }
+    .back:hover { color: var(--link); }
+    .post-title {
+      font-family: var(--mono);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .post-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .post-meta .label {
+      color: var(--text-tertiary);
+      opacity: 0.6;
+    }
+    .post-tags {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .post-tags .tag {
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+    .post-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-primary);
+    }
+    .post-body p { margin-bottom: 1.2em; }
+    .post-body a { color: var(--link); }
+    .post-body h2 {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      margin: 2em 0 0.8em;
+    }
+    .post-body pre {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1.2em 0;
+      position: relative;
+    }
+    .post-body code {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+    .post-body p code, .post-body li code {
+      background: var(--bg-secondary);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    .post-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.4em 0;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .post-body th {
+      text-align: left;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      border-bottom: 1px solid var(--border);
+      padding: 6px 10px 6px 0;
+    }
+    .post-body td {
+      padding: 5px 10px 5px 0;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .post-body td:first-child, .post-body th:first-child {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .post-body td.num, .post-body th.num { text-align: right; padding-right: 0; }
+    .post-body td.pos { color: #3fb950; font-weight: 600; }
+    .post-body td.neg { color: #f85149; font-weight: 600; }
+    .post-body td.neutral { color: var(--text-secondary); }
+    .post-body ol, .post-body ul {
+      padding-left: 1.4em;
+      margin-bottom: 1.2em;
+    }
+    .post-body li { margin-bottom: 0.4em; }
+    .callout {
+      border-left: 2px solid var(--border);
+      padding: 0.6em 1em;
+      margin: 1.4em 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-style: italic;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1.6em 0;
+      font-family: var(--mono);
+    }
+    .stats-grid .stat {
+      background: var(--bg-secondary);
+      padding: 12px 14px;
+    }
+    .stats-grid .stat-label {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-bottom: 4px;
+    }
+    .stats-grid .stat-val {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-val.pos { color: #3fb950; }
+    .stat-val.neg { color: #f85149; }
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1.4em 0;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .rules-grid .rule {
+      background: var(--bg-secondary);
+      padding: 12px 14px;
+    }
+    .rules-grid .rule-title {
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+    .rules-grid .rule-body {
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    @media (max-width: 540px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .rules-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="post-container">
+
+    <a href="/" class="back">← raphael mukondiwa</a>
+
+    <div class="post-title">our thesis was perfect. then iran got bombed.</div>
+
+    <div class="post-meta">
+      <span class="label">trading</span>
+      <time datetime="2026-04-15">2026-04-15</time>
+    </div>
+    <div class="post-meta">
+      <span class="label">course</span>
+      <span>fmkt390s: trading derivatives · duke university · spring 2026</span>
+    </div>
+    <div class="post-meta">
+      <span class="label">partner</span>
+      <span>benjamin sherman</span>
+    </div>
+
+    <div class="post-tags">
+      <span class="tag">options</span>
+      <span class="tag">futures</span>
+      <span class="tag">iron butterfly</span>
+      <span class="tag">s&amp;p 500</span>
+      <span class="tag">vega</span>
+      <span class="tag">delta hedging</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="post-body">
+
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-label">entry</div>
+          <div class="stat-val">281.40 pts</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">peak p&amp;l</div>
+          <div class="stat-val pos">+$61,254</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">final p&amp;l</div>
+          <div class="stat-val neg">−$31,669</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">hedges</div>
+          <div class="stat-val">10</div>
+        </div>
+      </div>
+
+      <h2>// why i took the course</h2>
+
+      <p>
+        I've always
+        been curious about markets. For as long as I can remember, I'd see people talking about
+        options and futures and go down the rabbit hole (YouTube, Reddit, X). I'd read for an
+        hour and come out feeling like I understood less than before. When a course came up that
+        would put me inside an actual trading environment, I signed up immediately. I didn't want
+        another theoretical explanation. I wanted to actually do something.
+      </p>
+
+      <h2>// starting from zero</h2>
+
+      <p>
+        I want to be honest about where I was at the start: I knew nothing. I'd heard the words
+        options, Greeks, futures; but couldn't have explained any of them clearly. The course
+        spent a few weeks on derivatives foundations while playing trading games, then three weeks
+        specifically on options before we touched a live position. Even after all of that, the gap
+        between grasping a concept in class and trusting it with real money was daunting.
+      </p>
+
+      <h2>// the call with ben</h2>
+
+      <p>
+        My partner Ben and I were both inexperienced with trading. We got on a call for a few
+        hours, talked through the market and the different strategies we had just learned in
+        lecture, and landed on an iron butterfly on S&amp;P 500 futures. Our thesis: the market
+        looked range-bound near 6,900, implied volatility was elevated (premiums were expensive),
+        and nothing major seemed to be coming. Classic setup for a premium-selling structure.
+      </p>
+
+      <p>
+        Short ATM straddles at 6,900, protective wings on each side. Positive theta, short vega,
+        delta-neutral at open. We made the wings asymmetric: 600 points on the downside, 250 on
+        the upside, because a downside move felt like the bigger risk. It looked clean. We locked
+        the trade on February 26th.
+      </p>
+
+      <p>Two days later, the Iran war started.</p>
+
+      <div class="callout">
+        "we had optimised for a quiet market. we got the opposite."
+      </div>
+
+      <h2>// what the war did to the trade</h2>
+
+      <p>
+        We had no idea it was coming. Nobody in our position did. But the moment U.S./Israel
+        strikes on Iran began on February 28th, the thesis we'd spent hours building was operating
+        in a completely different world. Geopolitical risk flooded back into markets. Implied
+        volatility spiked. Our short vega position, which profits when vol falls, started bleeding.
+      </p>
+
+      <p>
+        The first few weeks were still volatile but survivable. The VIX spiked 18% on March 2nd,
+        the S&amp;P dipped and recovered, and we were executing futures hedges to keep delta in
+        check. Nine hedge actions over the life of the trade. By March 10th, theta had been
+        grinding in our favour and we were up around $55k. By March 16-17, the GTC/AI conference
+        gave markets a lift and we hit our peak.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width:52px">date</th>
+            <th>event</th>
+            <th class="num">p&amp;l</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2/26</td>
+            <td class="neutral">ben and i finalise the iron butterfly; thesis locked</td>
+            <td class="num neutral">—</td>
+          </tr>
+          <tr>
+            <td>2/28</td>
+            <td class="neutral">u.s./israel strikes on iran begin. war breaks out.</td>
+            <td class="num neutral">—</td>
+          </tr>
+          <tr>
+            <td>3/2</td>
+            <td class="neutral">vix spikes 18%; s&amp;p dips 1.2% intraday then recovers</td>
+            <td class="num neutral">—</td>
+          </tr>
+          <tr>
+            <td>3/10</td>
+            <td class="neutral">theta grinding; position recovering strongly</td>
+            <td class="num pos">+$55k</td>
+          </tr>
+          <tr>
+            <td>3/16-17</td>
+            <td class="neutral">gtc/ai conference lifts markets: peak of the trade</td>
+            <td class="num pos">+$61k</td>
+          </tr>
+          <tr>
+            <td>3/18-20</td>
+            <td class="neutral">oil surges; strait of hormuz fears spike vol hard</td>
+            <td class="num neg">−$31k</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        Then the floor came out. March 18-20, oil surged on Strait of Hormuz fears. The
+        volatility spike was fast and brutal. We went from +$61k to -$31k in a span of 48 hours.
+        There was nothing subtle about it.
+      </p>
+
+      <h2>// the hardest part</h2>
+
+      <p>
+        The loss itself wasn't what hit hardest. It was the internal conflict that ran through the
+        entire second half of the trade. My professor had spent weeks on one core message:
+        systematic thinking. Define your rules, stick to them, don't let instinct override the
+        framework. That's what separates disciplined trading from gambling.
+      </p>
+
+      <p>
+        But when you're watching a position deteriorate in real time, every instinct fires. You
+        want to act. You want to do something. Holding to a systematic approach when your gut is
+        screaming at you is a completely different skill from understanding the approach
+        intellectually. I don't think I fully resolved that tension during the trade. I'm not sure
+        anyone does on the first go.
+      </p>
+
+      <h2>// final week repositioning</h2>
+
+      <p>
+        After our first go, we wanted to do a short-term, high-risk position since our first trade
+        was quite protected. For fun, we saw that we had limited time left (only a week) and
+        implied vol was at its highest since Liberation Day, so we entered 100 short straddles at
+        6,400: a concentrated bet that vol was expensive and would come in. The SPX rebounded
+        ~200 points on April 1st, pulling spot away from our strike. Directional and gamma losses
+        outweighed the vol benefit. The trade didn't recover.
+      </p>
+
+      <p>
+        In hindsight, it was exactly the kind of move my professor warned against: a
+        high-conviction, concentrated bet made under time pressure and stress. We broke rule six
+        before we'd even written it down.
+      </p>
+
+      <h2>// what i'd do differently</h2>
+
+      <div class="rules-grid">
+        <div class="rule">
+          <div class="rule-title">01 — scan macro before entry</div>
+          <div class="rule-body">We had no idea a war was two days away. A basic geopolitical scan before locking the trade would have at least surfaced the risk.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-title">02 — rules over gut</div>
+          <div class="rule-body">Define exit and hedge triggers before you open. Discretionary judgment under pressure is unreliable; I learned this the hard way.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-title">03 — size for the worst case</div>
+          <div class="rule-body">Position sizing matters more than strategy selection. A well-structured trade at the wrong size still blows up.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-title">04 — delta hedging has limits</div>
+          <div class="rule-body">Futures hedges help manage delta but offer no protection against sharp, vol-driven moves. Know what your hedge actually covers.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-title">05 — re-test your thesis live</div>
+          <div class="rule-body">The conditions that justified the trade at open won't always hold. Keep pressure-testing as the position evolves.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-title">06 — don't reposition under stress</div>
+          <div class="rule-body">Our final week move was a high-conviction bet made under pressure with limited time. That's the worst possible context for it.</div>
+        </div>
+      </div>
+
+      <h2>// closing thought</h2>
+
+      <p>
+        We built a carefully reasoned trade and a war started two days later. That's markets. No
+        model accounts for everything, and no amount of preparation makes you immune to the things
+        you don't know to look for. What I took from this wasn't the P&amp;L: it was the
+        experience of actually being inside a position when the world shifts, and having to make
+        decisions with incomplete information under real pressure. That's the thing no classroom
+        fully prepares you for. I'm glad I got a version of it here.
+      </p>
+
+    </div>
+
+    <hr class="divider">
+
+    <footer style="padding-top:16px;font-family:var(--mono);font-size:11px;color:var(--text-tertiary);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <span><a href="/" style="color:var(--text-tertiary);text-decoration:none;">← home</a></span>
+      <span><span class="goatcounter-count" data-path="/posts/2026-04-iron-butterfly.html"></span> views · <button class="theme-toggle" onclick="toggleTheme()" aria-label="toggle theme">theme</button></span>
+    </footer>
+
+  </div>
+
+  <script data-goatcounter="https://rmukondiwa.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    })();
+    function toggleTheme() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var isDark = current === 'dark' ||
+        (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      var next = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+  </script>
+</body>
+</html>
