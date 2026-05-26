@@ -65,6 +65,84 @@
       border-top: 1px solid var(--border);
       margin: 32px 0;
     }
+    .post-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-primary);
+    }
+    .post-body p { margin-bottom: 1.2em; }
+    .post-body a { color: var(--link); }
+    .post-body h2 {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin: 2em 0 0.8em;
+    }
+    .post-body pre {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1.2em 0;
+      position: relative;
+    }
+    .post-body pre .lang-label {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      opacity: 0.7;
+    }
+    .post-body code {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+    .post-body p code, .post-body li code {
+      background: var(--bg-secondary);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    .post-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.4em 0;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .post-body th {
+      text-align: left;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      border-bottom: 1px solid var(--border);
+      padding: 6px 10px 6px 0;
+    }
+    .post-body td {
+      padding: 5px 10px 5px 0;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .post-body td:first-child, .post-body th:first-child {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .callout {
+      border-left: 2px solid var(--border);
+      padding: 0.6em 1em;
+      margin: 1.4em 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -72,21 +150,180 @@
 
     <a href="/" class="back">← raphael mukondiwa</a>
 
-    <div class="post-title">allocator lab</div>
+    <div class="post-title">allocator lab: building memory allocators from scratch</div>
 
-    <div class="post-meta">
-      <span class="label">project</span>
-      <time datetime="2026-04">2026-04</time>
-    </div>
     <div class="post-meta">
       <span class="label">written</span>
       <time datetime="2026-04-20">2026-04-20</time>
+    </div>
+    <div class="post-meta">
+      <span class="label">status</span>
+      <span>living document · updated as new allocators are implemented</span>
     </div>
 
     <div class="post-tags">
       <span class="tag">c++</span>
       <span class="tag">memory</span>
       <span class="tag">systems</span>
+      <a href="https://github.com/rmukondiwa/Allocator-Lab" target="_blank" rel="noopener" class="tag" style="text-decoration:none;color:var(--link);">repo ↗</a>
+    </div>
+
+    <hr class="divider">
+
+    <div class="post-body">
+
+      <h2>// why</h2>
+
+      <p>
+        Memory allocation is one of those things that is easy to take for granted. You call
+        <code>malloc</code>, you get a pointer, you move on. But when you are writing
+        performance-sensitive systems; trading infrastructure, game engines, embedded firmware;
+        the allocator is not background noise. It is a design decision with real latency
+        consequences.
+      </p>
+
+      <p>
+        I wanted to understand what is actually happening beneath <code>malloc</code>. Not just
+        conceptually, but at the implementation level: what does the allocator track, how does
+        it handle alignment, what are the real tradeoffs between speed and flexibility. This
+        project is my way of working through that; one allocator at a time, starting simple and
+        getting progressively more complex.
+      </p>
+
+      <h2>// the bump allocator</h2>
+
+      <p>
+        The bump allocator is the simplest possible allocator. You reserve a fixed block of
+        memory upfront, keep a pointer to the current position, and every allocation just bumps
+        that pointer forward by the requested size. No free list. No headers. No bookkeeping per
+        allocation. Just a pointer and an offset.
+      </p>
+
+      <pre><code><span class="lang-label">c++</span>class BumpAllocator {
+    char*       m_buffer;  // start of memory pool
+    std::size_t m_size;    // total capacity
+    std::size_t m_offset;  // current position
+
+    void* bump_alloc(std::size_t size, std::size_t alignment) {
+        std::size_t aligned = (m_offset + alignment - 1) & ~(alignment - 1);
+        if (aligned + size > m_size) return nullptr;
+        void* ptr = m_buffer + aligned;
+        m_offset  = aligned + size;
+        return ptr;
+    }
+
+    void reset() { m_offset = 0; }
+};</code></pre>
+
+      <p>
+        The alignment logic is the only non-obvious part. Most hardware requires that objects
+        live at addresses that are multiples of their size; a 64-bit double needs to be at an
+        8-byte-aligned address, for example. If you ignore alignment, the CPU either silently
+        fixes it at a performance cost, or on stricter architectures, throws a bus error.
+      </p>
+
+      <p>
+        The expression <code>(m_offset + alignment - 1) &amp; ~(alignment - 1)</code> rounds
+        <code>m_offset</code> up to the next multiple of alignment using a bitmask. It only
+        works when alignment is a power of two; which is always true for natural alignment
+        requirements. The idea: <code>alignment - 1</code> gives you a mask of the low bits,
+        flipping it gives you a mask that zeros them out, and adding <code>alignment - 1</code>
+        before masking ensures you round up rather than down.
+      </p>
+
+      <div class="callout">
+        "allocation in O(1). deallocation in O(1). individual frees: impossible."
+      </div>
+
+      <h2>// tradeoffs</h2>
+
+      <p>
+        The bump allocator is fast because it does almost nothing. Allocation is two arithmetic
+        operations and a bounds check. There is no fragmentation tracking, no free list
+        traversal, no coalescing. In a tight loop allocating many small objects, this is as fast
+        as an allocator gets.
+      </p>
+
+      <p>
+        The cost is that you cannot free individual allocations. The only reclaim mechanism is
+        <code>reset()</code>, which drops the offset back to zero and reuses the entire buffer.
+        This makes the bump allocator useless for general-purpose allocation; but exactly right
+        for specific patterns: per-frame allocations in a game engine, per-request allocations
+        in a web server, temporary scratch space in a hot path.
+      </p>
+
+      <p>
+        The other limitation is fixed capacity. The buffer is allocated upfront and does not
+        grow. If you run out, <code>bump_alloc</code> returns <code>nullptr</code> and you have
+        to handle it. In practice this means you need to know your upper bound ahead of time,
+        which is a constraint that rules out a lot of use cases.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>property</th>
+            <th>value</th>
+            <th>note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>allocation speed</td><td>O(1)</td><td>two ops and a bounds check</td></tr>
+          <tr><td>deallocation speed</td><td>O(1)</td><td>reset only; no individual frees</td></tr>
+          <tr><td>fragmentation</td><td>none</td><td>linear layout, no gaps</td></tr>
+          <tr><td>memory overhead</td><td>none</td><td>no per-allocation headers</td></tr>
+          <tr><td>flexibility</td><td>low</td><td>no individual deallocation</td></tr>
+          <tr><td>use case</td><td colspan="2">per-frame, per-request, scratch buffers</td></tr>
+        </tbody>
+      </table>
+
+      <h2>// what i learned</h2>
+
+      <p>
+        Alignment is not an afterthought. Before implementing this I understood alignment
+        conceptually; after implementing it I understand why the bitmask trick works and why
+        alignment must be a power of two for it to be valid. That is a different kind of
+        understanding.
+      </p>
+
+      <p>
+        The simplest allocator is also the most honest one. It does not hide its constraints.
+        You give it memory, it gives it back to you in order, and when it is full it tells you.
+        More complex allocators add flexibility but they also add hidden costs: fragmentation,
+        lock contention, cache pressure from metadata. The bump allocator has none of those
+        costs, and none of that flexibility. Understanding that tradeoff at the implementation
+        level changes how you think about allocator choice.
+      </p>
+
+      <h2>// coming next</h2>
+
+      <p>
+        This project is ongoing. The bump allocator is the foundation; subsequent
+        implementations will add progressively more capability and complexity:
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>allocator</th>
+            <th>description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>pool allocator</td><td>fixed-size blocks; O(1) alloc and free; no fragmentation</td></tr>
+          <tr><td>free list allocator</td><td>variable-size blocks; tracks freed regions for reuse</td></tr>
+          <tr><td>slab allocator</td><td>object caching; used in Linux kernel; reduces init overhead</td></tr>
+          <tr><td>arena allocator</td><td>region-based; multiple bumps with selective region reset</td></tr>
+          <tr><td>stack allocator</td><td>LIFO discipline; O(1) free with ordering constraint</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        Each one is a different answer to the same question: given a constraint on allocation
+        patterns, how fast can you make the allocator without sacrificing correctness. Notes for
+        each implementation will be added here as they are finished.
+      </p>
+
     </div>
 
     <hr class="divider">
