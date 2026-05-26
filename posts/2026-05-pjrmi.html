@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>contributing to pjrmi · raphael mukondiwa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .post-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: clamp(32px, 5vh, 64px) var(--gutter) clamp(48px, 8vh, 96px);
+    }
+    .back {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 32px;
+    }
+    .back:hover { color: var(--link); }
+    .post-title {
+      font-family: var(--mono);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .post-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .post-meta .label {
+      color: var(--text-tertiary);
+      opacity: 0.6;
+    }
+    .post-tags {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .post-tags .tag {
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+    .post-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-primary);
+    }
+    .post-body p { margin-bottom: 1.2em; }
+    .post-body a { color: var(--link); }
+    .post-body h2 {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin: 2em 0 0.8em;
+    }
+    .post-body pre {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1.2em 0;
+      position: relative;
+    }
+    .post-body pre .lang-label {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      opacity: 0.7;
+    }
+    .post-body code {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+    .post-body p code, .post-body li code {
+      background: var(--bg-secondary);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    .callout {
+      border-left: 2px solid var(--border);
+      padding: 0.6em 1em;
+      margin: 1.4em 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="post-container">
+
+    <a href="/" class="back">← raphael mukondiwa</a>
+
+    <div class="post-title">contributing to pjrmi — d. e. shaw's python-java rpc bridge</div>
+
+    <div class="post-meta">
+      <span class="label">written</span>
+      <time datetime="2026-05-26">2026-05-26</time>
+    </div>
+    <div class="post-meta">
+      <span class="label">diff</span>
+      <span>2 files · +89 / −4 · 1 test added</span>
+    </div>
+
+    <div class="post-tags">
+      <span class="tag">java</span>
+      <span class="tag">python</span>
+      <span class="tag">open source</span>
+      <span class="tag">systems</span>
+      <a href="https://github.com/deshaw/pjrmi/pull/14" target="_blank" rel="noopener" class="tag" style="text-decoration:none;color:var(--link);">pr ↗</a>
+      <a href="https://github.com/deshaw/pjrmi" target="_blank" rel="noopener" class="tag" style="text-decoration:none;color:var(--link);">repo ↗</a>
+    </div>
+
+    <hr class="divider">
+
+    <div class="post-body">
+
+      <h2>// why i looked at it</h2>
+
+      <p>
+        PJRmi caught my eye because it sits at an intersection I find interesting: systems
+        programming and quantitative finance. D. E. Shaw built it internally to let researchers
+        call legacy Java pricing and risk libraries directly from Python; it has been running in
+        production at one of the biggest quant firms in the world.
+      </p>
+
+      <h2>// what pjrmi actually does</h2>
+
+      <p>
+        The idea is simple. You have Java code you trust: years of battle-tested pricing logic,
+        a risk engine, whatever. You also have Python researchers who need to interact with it.
+        PJRmi lets them call Java methods directly from Python as if the code were local.
+      </p>
+
+      <p>
+        Under the hood it spawns a Java child process, connects via Unix pipes, and uses
+        reflection to read the entire class hierarchy at runtime. So every time you call
+        <code>class_for_name('java.util.ArrayList')</code> from Python, PJRmi sends a request
+        to the Java process, gets back full metadata about the class, then dynamically constructs
+        a Python class from scratch. Methods, fields, constructors, tab completion, docstrings,
+        operator overloading; all of it built at runtime from reflection data. The Java object
+        lives in the JVM. The Python object is a shim that forwards every call across the process
+        boundary.
+      </p>
+
+      <p>
+        It supports multiple transport modes: Unix FIFO pipes for local child processes, TCP
+        sockets for remote Java servers, and an in-process JVM via C++ extension for maximum
+        performance. The protocol is the same regardless of transport; you just change which
+        <code>connect_to_*</code> method you call.
+      </p>
+
+      <div class="callout">
+        "the Java object lives in the JVM. the Python object is a shim."
+      </div>
+
+      <h2>// tracing the code</h2>
+
+      <p>
+        Before touching anything, I traced a single request end to end. The 7,000-line
+        <code>__init__.py</code> is intimidating to read top to bottom but tracing one specific
+        path through it is a lot less toiling. I followed <code>connect_to_child_jvm</code> all
+        the way through to a usable Java object in Python hands:
+      </p>
+
+      <pre><code>connect_to_child_jvm()
+  -> UnixFifoTransport    spawns Java subprocess, opens pipes
+  -> PJRmi(transport)     wraps it in the high-level API
+  -> c.connect()          handshakes with Java
+  -> class_for_name()     requests class metadata from Java
+  -> _request_class()     serializes the request, sends over the pipe
+  -> _read_result()       blocks until Java responds
+  -> _create_class()      builds the Python shim from metadata</code></pre>
+
+      <p>
+        That trace took a few hours. But it made everything else readable. Once you understand
+        the request/response lifecycle, the rest of the codebase is variations on the same pattern.
+      </p>
+
+      <p>
+        The <code>_create_class</code> function is the most interesting part. It takes a
+        dictionary of Java class metadata and dynamically constructs a Python class using
+        Python's metaclass system; the equivalent of calling <code>type(name, bases, dict)</code>
+        at runtime. Every Java method becomes a real Python function. Every Java exception becomes
+        a Python exception you can catch. The constructor is overridden to send a Java
+        instantiation request rather than allocating Python memory. The illusion is complete
+        enough that most of the time you forget there is a JVM on the other side.
+      </p>
+
+      <h2>// what i found</h2>
+
+      <p>
+        While reading through the array handling layer, I noticed that slice indexing on Java
+        array wrappers was unimplemented. If you tried to do <code>array[1:4]</code> from Python,
+        it would crash the entire Java connection with an <code>IllegalArgumentException</code>.
+        Not a clean error; the whole connection would die.
+      </p>
+
+      <p>
+        The interesting part was that the bug was not in the wire protocol. <code>PythonSlice</code>
+        objects; Java's representation of Python's <code>slice(start, stop, step)</code>; were
+        being serialized correctly on the Python side and deserialized correctly on the Java side.
+        The data crossed the wire intact. It just had nowhere to go once it arrived.
+      </p>
+
+      <p>
+        The gap was in <code>WrappedArrayLike</code>; the class PJRmi uses to expose Java arrays
+        to Python. Its <code>__getitem__</code> and <code>__setitem__</code> handlers only had a
+        branch for integer keys. Anything else fell through to an <code>else</code> clause that
+        threw and terminated the connection.
+      </p>
+
+      <p>
+        I also found a pre-existing bug in the <code>__setitem__</code> traversal loop. When
+        walking a multi-dimensional array to reach the target dimension, the code was doing this:
+      </p>
+
+      <pre><code><span class="lang-label">java</span>array = Array.get(value, index);  // wrong: value is what you are writing</code></pre>
+
+      <p>When it should have been:</p>
+
+      <pre><code><span class="lang-label">java</span>array = Array.get(array, index);  // right: array is what you are traversing</code></pre>
+
+      <p>
+        In the common single-dimension case it does not matter. In a multi-dimensional case it
+        reads from the wrong object entirely. Silent and harmless most of the time; semantically
+        wrong always.
+      </p>
+
+      <h2>// the fix</h2>
+
+      <p>
+        <code>Hypercube.java</code>; PJRmi's NumPy-equivalent ndarray system; already handled
+        <code>PythonSlice</code> correctly. I used it as the reference implementation rather than
+        inventing new semantics.
+      </p>
+
+      <p>
+        For <code>__getitem__</code>: when the key is a <code>PythonSlice</code>, resolve start
+        and stop from the slice fields. Null means unbounded, matching Python's <code>None</code>
+        semantics. Normalize negative indices the Python way: <code>index &lt; 0</code> becomes
+        <code>index + length</code>. Clamp both ends to array bounds. Allocate a new array of
+        the right component type via reflection. Copy elements. Reject non-unit steps with
+        <code>UnsupportedOperationException</code>; same behavior as Hypercube.
+      </p>
+
+      <p>
+        For <code>__setitem__</code>: same bounds resolution, but instead of returning a new
+        array, write element-by-element into the target using <code>Array.set</code>. The slice
+        branch lives in the final key block; after the traversal loop walks down to the target
+        dimension. I also fixed the <code>Array.get(value, ...)</code> bug in the traversal loop
+        while I was in there.
+      </p>
+
+      <p>
+        Rather than modifying the existing array test, I added a dedicated
+        <code>test_arraylike_slicing</code> method covering basic slices, unbounded start and
+        stop, negative indices, setitem, and step rejection. All 28 tests pass.
+      </p>
+
+      <h2>// what i took from it</h2>
+
+      <p>
+        Reading the call stack before writing anything was the most useful thing I did. The gap
+        became obvious once I understood the lifecycle. If I had skipped the trace and gone
+        straight to the code, I would have fixed the symptom without understanding why the fix
+        was right.
+      </p>
+
+      <p>
+        Matching existing conventions is what makes a contribution mergeable. I did not invent
+        new slice semantics; I found the pattern the codebase already used in Hypercube and
+        extended it. Maintainers do not want new patterns. They want the existing ones applied
+        correctly.
+      </p>
+
+      <p>
+        The hardest part of contributing to an unfamiliar codebase is not the fix itself. It is
+        understanding the conventions well enough to know what a correct fix looks like. The
+        <code>PythonSlice</code> implementation took about two hours once I had traced the
+        codebase. Understanding the codebase well enough to trust the implementation took the
+        rest of the time.
+      </p>
+
+    </div>
+
+    <hr class="divider">
+
+    <footer style="padding-top:16px;font-family:var(--mono);font-size:11px;color:var(--text-tertiary);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <span><a href="/" style="color:var(--text-tertiary);text-decoration:none;">← home</a></span>
+      <span><span class="goatcounter-count" data-path="/posts/2026-05-pjrmi.html"></span> views · <button class="theme-toggle" onclick="toggleTheme()" aria-label="toggle theme">theme</button></span>
+    </footer>
+
+  </div>
+
+  <script data-goatcounter="https://rmukondiwa.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    })();
+    function toggleTheme() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var isDark = current === 'dark' ||
+        (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      var next = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+  </script>
+</body>
+</html>
