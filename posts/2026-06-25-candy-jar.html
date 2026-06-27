@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pricing the luck out of a candy jar · raphael mukondiwa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .post-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: clamp(32px, 5vh, 64px) var(--gutter) clamp(48px, 8vh, 96px);
+    }
+    .back {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 32px;
+    }
+    .back:hover { color: var(--link); }
+    .post-title {
+      font-family: var(--mono);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .post-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .post-meta .label {
+      color: var(--text-tertiary);
+      opacity: 0.6;
+    }
+    .post-tags {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .post-tags .tag {
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+    .post-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-primary);
+    }
+    .post-body p { margin-bottom: 1.2em; }
+    .post-body a { color: var(--link); }
+    .post-body h2 {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin: 2em 0 0.8em;
+    }
+    .post-body pre {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1.2em 0;
+      position: relative;
+    }
+    .post-body code {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+    .post-body p code, .post-body li code {
+      background: var(--bg-secondary);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    .post-body figure {
+      margin: 1.8em 0;
+    }
+    .post-body figure img {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .post-body figcaption {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+      text-align: center;
+    }
+    .callout {
+      border-left: 2px solid var(--border);
+      padding: 0.6em 1em;
+      margin: 1.4em 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-style: italic;
+    }
+    .big-answer {
+      font-family: var(--mono);
+      font-size: clamp(48px, 12vw, 88px);
+      font-weight: 600;
+      color: #d1492a;
+      line-height: 1;
+      margin: 0.2em 0 0.4em;
+    }
+  </style>
+</head>
+<body>
+  <div class="post-container">
+
+    <a href="/" class="back">← raphael mukondiwa</a>
+
+    <div class="post-title">pricing the luck out of a candy jar</div>
+
+    <div class="post-meta">
+      <span class="label">written</span>
+      <time datetime="2026-06-25">2026-06-25</time>
+    </div>
+    <div class="post-meta">
+      <span>22 guesses · truth 77 · my guess 95 · off by 18</span>
+    </div>
+
+    <div class="post-tags">
+      <span class="tag">markets</span>
+      <span class="tag">statistics</span>
+      <span class="tag">estimation</span>
+      <span class="tag">bayesian</span>
+      <span class="tag">decision-making</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="post-body">
+
+      <h2>// the setup</h2>
+
+      <p>
+        I was at an event with friends when I found out a guess-the-candies-in-a-jar competition
+        was running. A glass pitcher sat on the counter, packed to the neck with wrapped candy:
+        tootsie rolls, starbursts, a couple of lollipops, nerds packets. Next to it, a slip of
+        paper: estimate the count, one entry per person, closest wins.
+      </p>
+
+      <p>
+        I don't really gamble, but I do like an estimation problem. So I treated it as one.
+      </p>
+
+      <h2>// the math</h2>
+
+      <p>
+        First instinct: this is a volume problem. Using my iPhone 14 Pro as a ruler, I put the
+        fill line at about 9.4 inches and the diameter at 3.5. A cylinder that size is
+      </p>
+
+      <pre><code>V = π · 1.75² · 9.4 ≈ 90 in³</code></pre>
+
+      <p>
+        But a jar of candy is not 90 cubic inches of candy. Wrapped sweets with twisted ends pack
+        loosely, so maybe 55 to 60 percent of that volume is actually candy and the rest is air.
+        Then you divide by the average size of one piece. The jar was mostly tootsie roll midgees,
+        which are tiny, with a few bigger items pulling the average up. Work it through and you
+        land somewhere around 130 to 140.
+      </p>
+
+      <p>
+        So that was my number. About 135.
+      </p>
+
+      <h2>// the crowd</h2>
+
+      <p>
+        Before I submitted, I stayed close to the information. I stood by the entry sheet and read
+        the other guesses, twenty-two of them, then collected the entries and built a distribution.
+      </p>
+
+      <pre><code>mean = 130.5    median = 130</code></pre>
+
+      <figure>
+        <img src="../assets/candy-jar-dist-all22.png" alt="Histogram of all 22 guesses: a fat cluster near 130 with a long right tail. Mean 130.5, median 130, sd 42.6.">
+        <figcaption>all 22 guesses: a fat cluster near 130, a long right tail.</figcaption>
+      </figure>
+
+      <p>
+        Twenty-two strangers, guessing on their own with their own methods, landed almost exactly
+        where my volume math did. This is the wisdom of crowds in one tidy data point. The
+        individual errors are everywhere (someone wrote 236, someone wrote 57) but they are roughly
+        symmetric, so they cancel, and the average converges on something sharp. Mean and median
+        agreeing to within a point told me the distribution was balanced and the center was worth
+        trusting.
+      </p>
+
+      <p>
+        At this point I was very confident. Two independent methods, same answer. Textbook.
+      </p>
+
+      <div class="callout">
+        two independent methods, one answer. it read as confirmation. it was really just two biases
+        pointing the same way.
+      </div>
+
+      <h2>// the signal</h2>
+
+      <p>
+        Then I remembered something. A few entries earlier, right as another participant wrote 72,
+        the organizer, who actually knew the count, had glanced down the page and said two things
+        out loud to me. Someone is really close. And most of you are overestimating.
+      </p>
+
+      <p>
+        At the time it barely registered. It was only now, sitting with a distribution centered on
+        130, that the second sentence landed. She was telling me the consensus, the thing my volume
+        math agreed with, was biased high. In market terms she had dropped news that the asset was
+        mispriced, in real time, pointing at a specific quote, and I had let it slide right past me.
+      </p>
+
+      <p>
+        The right move is a Bayesian update. You have a prior (the crowd, around 130, wide and
+        uncertain) and a signal (someone who knows, pointing low and confident). You weight them by
+        how certain each one is, and the confident one dominates. The closest low guesses were 96
+        and 97, so I figured the truth sat right around there. I slid into the gap nobody had taken
+        and decided 95.
+      </p>
+
+      <p>
+        To sanity check, I rebuilt the distribution using only the guesses she had actually seen:
+        everything from the first slip up to and including that 72, about eighteen of them. I wanted
+        to see exactly what she saw.
+      </p>
+
+      <figure>
+        <img src="../assets/candy-jar-dist-first18.png" alt="Histogram of the first 18 guesses, what the organizer saw: same shape, still centered near 130. Mean 131.9, median 128, sd 46.2.">
+        <figcaption>first 18 guesses, what the organizer saw: same shape, still centered near 130.</figcaption>
+      </figure>
+
+      <p>
+        Same shape as the full set, a fat cluster up near 130, with 72 and 57 stranded out on their
+        own at the far left. I read the close one as the bottom edge of that cluster, 96 or 97, not
+        the lonely 72 sitting way out in the tail. So I wrote 95.
+      </p>
+
+      <p>
+        I felt clever about it.
+      </p>
+
+      <h2>// the answer</h2>
+
+      <div class="big-answer">77</div>
+
+      <p>
+        The winner had guessed 72. Off by five. They had looked like an outlier on the low end the
+        whole time.
+      </p>
+
+      <p>
+        I was off by eighteen. My "smart" update did beat the raw crowd (95 is closer to 77 than
+        130 is) but I still lost, and I lost in a specific, instructive way.
+      </p>
+
+      <h2>// what i got wrong</h2>
+
+      <p>
+        I updated in the right direction and then stopped too early.
+      </p>
+
+      <p>
+        "Most are overestimating" was not a nudge. It was the strongest piece of information in the
+        room, because it came from the one person who knew the answer, and I treated it like a soft
+        hint. I anchored on the nearest cluster of low guesses instead of asking what the sentence
+        actually implied: that the truth was below most of the distribution. Not below the middle.
+        Below almost all of it. The 57 and the 72 were not noise. They were the only people reading
+        the jar correctly, and the organizer was pointing straight at them.
+      </p>
+
+      <p>
+        The packing assumption was the other half. Loosely wrapped candy with twisted ends leaves
+        far more air than my 55 to 60 percent guess. I had set my prior too high before the signal
+        ever arrived, so even after updating I was still dragging that bias along with me.
+      </p>
+
+      <p>
+        And the 95 itself was a hunch in a lab coat. I had a gut feeling, the truth is lower, and I
+        dressed it as a clean normal curve with a tidy mean and a standard deviation, as if the
+        decimals made it real. The math around it only ever confirmed the direction, that the crowd
+        was biased high. It never confirmed the number. Any low guess would have been confirmed
+        exactly the same way. I let clean formatting stand in for evidence and mistook precision for
+        accuracy; its own kind of overconfidence, and arguably the more dangerous one, because it
+        feels like rigor.
+      </p>
+
+      <div class="callout">
+        i mistook precision for accuracy. that is its own kind of overconfidence, and it is the
+        dangerous kind, because it feels like rigor.
+      </div>
+
+      <h2>// why i'm writing it down</h2>
+
+      <p>
+        Because it is the cheapest possible version of a mistake I actually care about not making
+        with real money.
+      </p>
+
+      <p>
+        A consensus can be sharp, agreed upon, internally consistent, and still wrong, all at the
+        same time. When something credible says the consensus is biased, the size of your reaction
+        has to match the credibility of the source, not your own comfort level. I was comfortable
+        near the crowd, so I drifted back toward it. The person who won committed to what the jar
+        was telling them and did not flinch when their number looked silly next to everyone else's.
+      </p>
+
+      <p>
+        Estimation gets you to the right neighborhood. Knowing when to abandon the neighborhood, and
+        when to stop polishing a number that was only ever a guess, is the harder skill, and I
+        clearly do not have it yet. But the jar only cost me one guess to find that out.
+      </p>
+
+    </div>
+
+    <hr class="divider">
+
+    <footer style="padding-top:16px;font-family:var(--mono);font-size:11px;color:var(--text-tertiary);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <span><a href="/" style="color:var(--text-tertiary);text-decoration:none;">← home</a></span>
+      <span><span class="goatcounter-count" data-path="/posts/2026-06-25-candy-jar.html"></span> views · <button class="theme-toggle" onclick="toggleTheme()" aria-label="toggle theme">theme</button></span>
+    </footer>
+
+  </div>
+
+  <script data-goatcounter="https://rmukondiwa.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    })();
+    function toggleTheme() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var isDark = current === 'dark' ||
+        (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      var next = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+  </script>
+</body>
+</html>
