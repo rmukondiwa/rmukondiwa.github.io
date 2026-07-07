@@ -329,7 +329,9 @@
   </div>
 
   <script data-goatcounter="https://rmukondiwa.goatcounter.com/count"
-          async src="//gc.zgo.at/count.js"></script>
+          async src="//gc.zgo.at/count.v5.js"
+          crossorigin="anonymous"
+          integrity="sha384-atnOLvQb9t+jTSipvd75X2yginT4PjVbqDdlJAmxMm+wYElFmeR6EmLP5bYeoRVQ"></script>
   <script>
     (function() {
       var saved = localStorage.getItem('theme');
@@ -343,6 +345,14 @@
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
     }
+  </script>
+  <script>
+    document.querySelectorAll('.goatcounter-count').forEach(function (el) {
+      fetch('https://rmukondiwa.goatcounter.com/counter/' + el.dataset.path + '.json')
+        .then(function (r) { return r.json(); })
+        .then(function (d) { el.textContent = d.count; })
+        .catch(function () {});
+    });
   </script>
 </body>
 </html>
