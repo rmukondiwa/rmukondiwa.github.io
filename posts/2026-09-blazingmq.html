@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>contributing to blazingmq · raphael mukondiwa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .post-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: clamp(32px, 5vh, 64px) var(--gutter) clamp(48px, 8vh, 96px);
+    }
+    .back {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 32px;
+    }
+    .back:hover { color: var(--link); }
+    .post-title {
+      font-family: var(--mono);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .post-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .post-meta .label {
+      color: var(--text-tertiary);
+      opacity: 0.6;
+    }
+    .post-tags {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .post-tags .tag {
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+    .post-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-primary);
+    }
+    .post-body p { margin-bottom: 1.2em; }
+    .post-body a { color: var(--link); }
+    .post-body h2 {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin: 2em 0 0.8em;
+    }
+    .post-body pre {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1.2em 0;
+      position: relative;
+    }
+    .post-body pre .lang-label {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      opacity: 0.7;
+    }
+    .post-body code {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+    .post-body p code, .post-body li code {
+      background: var(--bg-secondary);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    figure {
+      margin: 1.8em 0;
+    }
+    figure img {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    figcaption {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+      text-align: center;
+    }
+    .callout {
+      border-left: 2px solid var(--border);
+      padding: 0.6em 1em;
+      margin: 1.4em 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="post-container">
+
+    <a href="/" class="back">← raphael mukondiwa</a>
+
+    <div class="post-title">contributing to blazingmq: bloomberg's distributed message queue</div>
+
+    <div class="post-meta">
+      <span class="label">written</span>
+      <time datetime="2026-09-30">2026-09-30</time>
+    </div>
+    <div class="post-meta">
+      <span class="label">diff</span>
+      <span>2 files · +105 / −72 · validated against existing tests</span>
+    </div>
+
+    <div class="post-tags">
+      <span class="tag">c++</span>
+      <span class="tag">open source</span>
+      <span class="tag">systems</span>
+      <a href="https://github.com/bloomberg/blazingmq/pull/1759" target="_blank" rel="noopener" class="tag" style="text-decoration:none;color:var(--link);">pr ↗</a>
+      <a href="https://github.com/bloomberg/blazingmq" target="_blank" rel="noopener" class="tag" style="text-decoration:none;color:var(--link);">repo ↗</a>
+    </div>
+
+    <figure>
+      <img src="../assets/blazingmq-pr-merged.png" alt="Merged pull request #1759 on bloomberg/blazingmq, showing the purple Merged badge and title">
+    </figure>
+
+    <hr class="divider">
+
+    <div class="post-body">
+
+      <h2>// why i looked at it</h2>
+
+      <p>
+        As funny as it sounds, I have thought message queues were cool ever since my second
+        summer at Microsoft. My project had a scaling problem: work was arriving faster than the
+        service could process it, and the fix was to put an Azure Queue Storage between the two.
+        Producers could keep writing, consumers could drain at their own pace, and a spike in
+        traffic became a backlog instead of an outage. It was the first time I saw a piece of
+        infrastructure change what a system could survive, not just how fast it ran. Since then,
+        anything about making a pipeline faster and more stable has pulled me in.
+      </p>
+
+      <p>
+        BlazingMQ is this same idea but taken much further. It's Bloomberg's open-source message
+        queue; written in C++, built for low latency, and running in production at a company whose
+        entire business depends on moving data quickly and without losing it. A queue like this has
+        to acknowledge a message only once it is safe, survive a crash without dropping anything,
+        and do both without adding latency to every message. I learn best from being hands on, so
+        I took the opportunity to build it, run traffic through it, and land a change the
+        maintainers would actually want to merge.
+      </p>
+
+      <h2>// what blazingmq actually does</h2>
+
+      <p>
+        Producers post messages to a queue. A broker stores them. Consumers read them back.
+        The broker guarantees that a message it has acknowledged will survive a crash.
+      </p>
+
+      <figure>
+        <img src="../assets/blazingmq-message-queue.png" alt="Message queue diagram: producers post to a queue on the broker, which persists messages and delivers them to consumers">
+      </figure>
+
+      <p>
+        That guarantee lives in the storage engine. Each partition of data is backed by a
+        <code>FileStore</code>, which manages three files on disk: a data file for message
+        payloads, a journal that records every operation, and a qlist file for queue metadata.
+        All three are append-only. When a message is confirmed and deleted, its bytes are not
+        reclaimed; they just sit in the file as dead weight.
+      </p>
+
+      <p>
+        Rollover is how the broker deals with that. When the active files fill up,
+        <code>rolloverImpl</code> creates a fresh set of files and copies over only the records
+        that are still outstanding. It then appends a sync point and records that sync point's
+        offset in the new journal's header; a non-zero value there is how crash recovery knows the
+        rollover finished. Finally, it retires the old files.
+      </p>
+
+      <div class="callout">
+        "it is compaction for an append-only log."
+      </div>
+
+      <h2>// getting it to build</h2>
+
+      <p>
+        This took longer than the change itself. BlazingMQ builds its two core dependencies from
+        source: BDE, Bloomberg's foundation library, and NTF, their networking library. My laptop
+        had 10GB free, so I moved to Duke's free VM for students and requested an Ubuntu machine:
+        2 vCPUs, 4GB of RAM, and two volumes of roughly 18GB each. Neither volume alone could
+        hold the dependency build at its peak.
+      </p>
+
+      <p>
+        The build script hardcodes <code>make -j 16</code>. On two cores and 4GB of RAM, 16
+        parallel compiles of template-heavy BDE code will exhaust memory and the build gets
+        killed. I dropped it to 2 jobs, added a swap file, and pointed the build directory at one
+        volume while the source and installed libraries lived on the other. The first full build
+        took around two hours.
+      </p>
+
+      <pre><code>bde         (~1,700 objects)  -> installed into ~/blazingmq/lib64
+ntf-core                      -> installed into ~/blazingmq/lib64
+blazingmq   (~890 targets)    -> broker, tool, unit tests</code></pre>
+
+      <p>
+        Then the VM rebooted and <code>/tmp</code> was wiped, taking the entire build directory
+        with it lol. The installed BDE and NTF libraries survived because they lived in my home
+        directory. The build script skips any dependency whose build directory contains a
+        <code>.complete</code> marker, so I recreated those markers, moved the build directory to
+        <code>/var/tmp</code> so a reboot could not do this again, and rebuilt only BlazingMQ.
+        Twenty minutes instead of two hours.
+      </p>
+
+      <p>
+        Once it built, I started a single-node broker and pushed a message through it with
+        <code>bmqtool</code>. Open a queue, post a payload, wait for the ACK.
+      </p>
+
+      <figure>
+        <img src="../assets/blazingmq-bmqtool-ack.png" alt="bmqtool terminal output showing the queue open succeeding and the ACK event for the posted message">
+      </figure>
+
+      <h2>// choosing what to touch</h2>
+
+      <p>
+        A maintainer had opened
+        <a href="https://github.com/bloomberg/blazingmq/issues/1727" target="_blank" rel="noopener">issue #1727</a>
+        listing the ten longest functions in the codebase. Length alone is not a good way to pick
+        one. A 1,600-line function that is a flat sequence of steps can be easier to refactor
+        safely than a 300-line function full of locks and early returns. So I filtered on two
+        things instead: whether the function had unit test coverage, and how tangled its control
+        flow was.
+      </p>
+
+      <p>
+        Half the list had no unit test file at all. That ruled them out; refactoring code nothing
+        can check is guessing. Of the rest, most were dense with branches and early returns.
+        <code>FileStore::rolloverImpl</code>, tenth on the list at 325 lines, had 1,900 lines of
+        tests beside it, including a case that runs rollover end to end and checks that the new
+        journal is well formed. It had two return statements, no locks, and ran on a single
+        dispatcher thread by contract. Reading it top to bottom, it broke into clear phases:
+      </p>
+
+      <pre><code>rolloverImpl()
+  -> create()                      new data/journal/qlist files; only failure point
+  -> writeRolledOverRecord() loop  copy outstanding records, tally per-queue counts
+  -> log queue summary             sort queues by bytes, print table
+  -> write first sync point        copy last sync point, update offsets, set header
+  -> log compaction metrics        new/old file sizes
+  -> truncate, gc, swap            retire old file set, install new one</code></pre>
+
+      <p>
+        Two things shaped what I did next. The header documented that <code>rolloverImpl</code>
+        has no side effect on failure; the only early return had to stay ahead of any state
+        change. And a maintainer had recently split the shutdown path in another file by
+        extracting a block into a private helper. That helped me figure out the pattern and
+        conventions the codebase already accepted.
+      </p>
+
+      <h2>// what i changed</h2>
+
+      <p>
+        I extracted the two logging phases into private helpers,
+        <code>logQueueRolloverSummary</code> and <code>logCompactionMetrics</code>, and marked
+        both <code>const</code>. They only read state and write to the log, and <code>const</code>
+        makes the compiler enforce that, which is great because a reviewer doesn't have to trust
+        me that they cannot touch the store. I also extracted the record-copy loop.
+      </p>
+
+      <p>
+        I deliberately left the sync-point write inline. It sets an offset in the new journal's
+        header, and a non-zero value there is the on-disk signal that rollover completed. The code
+        comments say it must be the last operation. Moving it into a helper would not have made it
+        wrong, but it would have made the ordering constraint easier to miss.
+      </p>
+
+      <h2>// the review and my final change</h2>
+
+      <p>
+        The maintainer's feedback was overall pretty good, with just one comment: the record-copy
+        helper was just a single for loop, and giving it its own function was over-engineering.
+        He was right; to be honest, I had added that just to try and make the function even
+        shorter. A one-loop helper hides three lines behind a name and adds a hop for the reader,
+        which defeats the purpose of the refactor in the first place. I inlined it back and kept
+        the two logging helpers. Afterwards, the tests passed locally, and the PR was merged!
+      </p>
+
+      <h2>// what i took from it</h2>
+
+      <p>
+        Picking the target mattered more than the change. I chose <code>rolloverImpl</code>
+        because it had tests and simple control flow, and everything after that was easier
+        because the tests could tell me when I was wrong.
+      </p>
+
+      <p>
+        Run the tests before touching anything. My first failure was a stale scratch directory,
+        not my code; if I had edited first, I would have blamed the refactor.
+      </p>
+
+      <p>
+        Extract less than you think. The helper the maintainer rejected was the one I added only
+        to make the function shorter.
+      </p>
+
+      <p>
+        I also profiled the broker under load, but that is its own write-up…
+      </p>
+
+    </div>
+
+    <hr class="divider">
+
+    <footer style="padding-top:16px;font-family:var(--mono);font-size:11px;color:var(--text-tertiary);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <span><a href="/" style="color:var(--text-tertiary);text-decoration:none;">← home</a></span>
+      <span><span class="goatcounter-count" data-path="/posts/2026-09-blazingmq.html"></span> views · <button class="theme-toggle" onclick="toggleTheme()" aria-label="toggle theme">theme</button></span>
+    </footer>
+
+  </div>
+
+  <script data-goatcounter="https://rmukondiwa.goatcounter.com/count"
+          async src="//gc.zgo.at/count.v5.js"
+          crossorigin="anonymous"
+          integrity="sha384-atnOLvQb9t+jTSipvd75X2yginT4PjVbqDdlJAmxMm+wYElFmeR6EmLP5bYeoRVQ"></script>
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    })();
+    function toggleTheme() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var isDark = current === 'dark' ||
+        (!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      var next = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+  </script>
+  <script>
+    document.querySelectorAll('.goatcounter-count').forEach(function (el) {
+      fetch('https://rmukondiwa.goatcounter.com/counter/' + el.dataset.path + '.json')
+        .then(function (r) { return r.json(); })
+        .then(function (d) { el.textContent = d.count; })
+        .catch(function () {});
+    });
+  </script>
+</body>
+</html>
