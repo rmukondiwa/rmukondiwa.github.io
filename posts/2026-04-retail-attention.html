@@ -624,7 +624,7 @@ FirstDaySpike_i,t   = 1{ z_comp ≥ 3.0 } · 1{ z_comp_t−1 &lt; 3.0 }</code></
   </script>
   <script>
     document.querySelectorAll('.goatcounter-count').forEach(function (el) {
-      fetch('https://rmukondiwa.goatcounter.com/counter/' + el.dataset.path + '.json')
+      fetch('https://rmukondiwa.goatcounter.com/counter/' + el.dataset.path + '.json?start=2020-01-01')
         .then(function (r) { return r.json(); })
         .then(function (d) { el.textContent = d.count; })
         .catch(function () {});
